@@ -2,7 +2,7 @@
 
 A lightweight Kanban task board built with plain HTML, CSS and vanilla JavaScript. No frameworks, no libraries, no build step.
 
-**Live demo:** _coming soon_
+**Live demo:** [xyphera.github.io/flowboard-kanban](https://xyphera.github.io/flowboard-kanban/)
 
 ![Flowboard screenshot](docs/screenshot.png)
 
