@@ -17,6 +17,7 @@ A lightweight Kanban task board built with plain HTML, CSS and vanilla JavaScrip
 - Search that filters cards across all columns
 - Tasks persist in `localStorage`. First-time visitors get example tasks, and **Reset board** brings them back
 - Responsive: columns sit side by side on desktop and stack on mobile
+- Day / night mode that follows your system setting until you choose one, then remembers your choice
 
 ## Tech
 
@@ -34,6 +35,8 @@ js/
   render.js       builds the board DOM from state
   dragDrop.js     HTML5 drag-and-drop handlers
   modal.js        promise-based add/edit and confirm dialogs
+  theme.js        day / night toggle button
+  themeInit.js    applies the theme before first paint (classic script)
   sampleTasks.js  example tasks for first-time visitors
 ```
 
@@ -48,6 +51,8 @@ js/
 **XSS-safe rendering.** All user text is inserted with `textContent` and `createElement`, never `innerHTML`. A task titled `<img src=x onerror=alert(1)>` shows up as literal text instead of running as code.
 
 **Native dialogs.** `<dialog>` with `showModal()` traps focus, closes on Escape and makes the page behind it inert, all without extra code. `modal.js` wraps the dialogs in Promises (`const values = await openTaskDialog()`), so calling code reads top to bottom, and focus returns to the button that opened the dialog.
+
+**Theming with design tokens.** Night mode only redefines the CSS custom properties under `[data-theme="dark"]`, with no component-level overrides. A tiny blocking script in `<head>` sets the theme before the first paint so the page never flashes the wrong colours. The toggle is a real `<button>` with `aria-pressed`, and `color-scheme` makes native controls such as the date picker match the theme.
 
 ## Running locally
 

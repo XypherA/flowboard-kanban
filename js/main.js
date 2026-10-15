@@ -22,11 +22,13 @@ import {
 import { renderBoard } from './render.js';
 import { initDragAndDrop } from './dragDrop.js';
 import { confirmAction, initModals, openTaskDialog } from './modal.js';
+import { initThemeToggle } from './theme.js';
 
 const board = document.querySelector('#board');
 const searchInput = document.querySelector('#search');
 const addTaskButton = document.querySelector('#add-task');
 const resetButton = document.querySelector('#reset-board');
+const themeToggle = document.querySelector('#theme-toggle');
 const announcer = document.querySelector('#announcer');
 
 // The search query is UI state, not task data, so it lives here and is never saved
@@ -147,6 +149,7 @@ async function handleReset() {
 function init() {
   subscribe(refresh);
   initModals();
+  initThemeToggle(themeToggle);
   initDragAndDrop(board, moveAndAnnounce);
 
   board.addEventListener('click', handleBoardClick);

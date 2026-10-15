@@ -19,6 +19,7 @@
   --color-primary-hover: #4338ca;
   --color-danger: #dc2626;
   --color-danger-hover: #b91c1c;
+  --color-danger-text: #dc2626;
   --color-focus: #6366f1;
   --color-drop-target: #e0e7ff;
 
@@ -60,6 +61,38 @@
   --shadow-lg: 0 20px 40px rgb(15 23 42 / 0.2);
 
   --transition: 150ms ease;
+
+  /* Tells the browser to draw native controls (date picker, scrollbars) to match */
+  color-scheme: light;
+}
+
+/* Night mode only swaps colour tokens: every component already reads its
+   colours from variables, so no component styles need dark overrides.
+   data-theme is set by js/themeInit.js before the page first paints. */
+:root[data-theme="dark"] {
+  --color-bg: #0b1120;
+  --color-surface: #1e293b;
+  --color-column: #131c2e;
+  --color-border: #334155;
+  --color-text: #e2e8f0;
+  --color-text-muted: #94a3b8;
+  --color-danger-text: #f87171;
+  --color-focus: #818cf8;
+  --color-drop-target: #1e1b4b;
+
+  /* Translucent tints read as soft colour on a dark surface; light text keeps contrast */
+  --color-low-bg: rgb(34 197 94 / 0.16);
+  --color-low-text: #86efac;
+  --color-medium-bg: rgb(245 158 11 / 0.16);
+  --color-medium-text: #fcd34d;
+  --color-high-bg: rgb(239 68 68 / 0.16);
+  --color-high-text: #fca5a5;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3), 0 1px 3px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 20px 40px rgb(0 0 0 / 0.6);
+
+  color-scheme: dark;
 }
 
 /* --------------------------------------------------------------------------
@@ -252,6 +285,22 @@ button {
   gap: var(--space-2);
 }
 
+/* Square icon button: shows a moon in day mode and a sun in night mode */
+.theme-toggle {
+  width: 2.625rem;
+  padding: 0;
+}
+
+.theme-toggle .icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.theme-toggle[aria-pressed="false"] .theme-toggle__sun,
+.theme-toggle[aria-pressed="true"] .theme-toggle__moon {
+  display: none;
+}
+
 /* --------------------------------------------------------------------------
    6. Board & columns
    -------------------------------------------------------------------------- */
@@ -436,7 +485,7 @@ button {
 
 .card__action--delete:hover:not(:disabled) {
   background: var(--color-high-bg);
-  color: var(--color-danger);
+  color: var(--color-danger-text);
 }
 
 .card__action:disabled {
@@ -480,6 +529,8 @@ button {
   border: 0;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
+  /* Set explicitly: the browser default (Canvas) ignores our theme tokens */
+  background: var(--color-surface);
   color: var(--color-text);
 }
 
@@ -534,7 +585,7 @@ button {
 }
 
 .field__required {
-  color: var(--color-danger);
+  color: var(--color-danger-text);
 }
 
 .field__hint {
@@ -543,7 +594,7 @@ button {
 }
 
 .field__error {
-  color: var(--color-danger);
+  color: var(--color-danger-text);
   font-size: var(--font-size-sm);
 }
 
