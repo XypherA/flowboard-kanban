@@ -1,0 +1,598 @@
+/* ==========================================================================
+   Flowboard styles
+   Mobile-first: base rules target small screens, media queries add the
+   desktop layout. Class names follow BEM (block__element--modifier).
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Design tokens
+   -------------------------------------------------------------------------- */
+:root {
+  /* Colours */
+  --color-bg: #f4f6fb;
+  --color-surface: #ffffff;
+  --color-column: #eceff7;
+  --color-border: #dfe3ee;
+  --color-text: #1f2937;
+  --color-text-muted: #64748b;
+  --color-primary: #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-danger: #dc2626;
+  --color-danger-hover: #b91c1c;
+  --color-focus: #6366f1;
+  --color-drop-target: #e0e7ff;
+
+  /* Priority labels: soft background + dark text keeps contrast above 4.5:1 */
+  --color-low-bg: #dcfce7;
+  --color-low-text: #166534;
+  --color-medium-bg: #fef3c7;
+  --color-medium-text: #92400e;
+  --color-high-bg: #fee2e2;
+  --color-high-text: #991b1b;
+
+  /* Column accent dots */
+  --color-todo: #94a3b8;
+  --color-in-progress: #3b82f6;
+  --color-done: #22c55e;
+
+  /* Typography */
+  --font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-size-sm: 0.8125rem;
+  --font-size-base: 0.9375rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.5rem;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+
+  /* Shape & depth */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgb(15 23 42 / 0.06), 0 1px 3px rgb(15 23 42 / 0.08);
+  --shadow-md: 0 4px 12px rgb(15 23 42 / 0.1);
+  --shadow-lg: 0 20px 40px rgb(15 23 42 / 0.2);
+
+  --transition: 150ms ease;
+}
+
+/* --------------------------------------------------------------------------
+   2. Base & reset
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* One consistent, highly visible focus ring for keyboard users only */
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   3. Utilities
+   -------------------------------------------------------------------------- */
+/* Hides content visually while keeping it available to screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sprite {
+  display: none;
+}
+
+.icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   4. Buttons & form controls
+   -------------------------------------------------------------------------- */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color var(--transition), border-color var(--transition);
+}
+
+.button--primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.button--primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.button--ghost {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+.button--ghost:hover {
+  border-color: var(--color-text-muted);
+}
+
+.button--danger {
+  background: var(--color-danger);
+  color: #fff;
+}
+
+.button--danger:hover {
+  background: var(--color-danger-hover);
+}
+
+.input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition);
+}
+
+.input:hover {
+  border-color: var(--color-text-muted);
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+
+.input--textarea {
+  resize: vertical;
+}
+
+.input--search {
+  padding-left: 2.25rem;
+  /* Magnifier drawn as a background so the input needs no extra wrapper markup */
+  background: var(--color-surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4-4'/%3E%3C/svg%3E") no-repeat 0.75rem center / 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   5. Header
+   -------------------------------------------------------------------------- */
+.header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.header__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+
+.header__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-right: auto;
+  font-size: var(--font-size-xl);
+  letter-spacing: -0.02em;
+}
+
+/* Three bars of decreasing height: a tiny Kanban board as the logo */
+.header__logo {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--radius-sm);
+  background:
+    linear-gradient(#fff, #fff) left 22% top 0.375rem / 16% 50% no-repeat,
+    linear-gradient(#fff, #fff) left 50% top 0.375rem / 16% 35% no-repeat,
+    linear-gradient(#fff, #fff) left 78% top 0.375rem / 16% 22% no-repeat,
+    var(--color-primary);
+}
+
+.header__search {
+  order: 3;
+  flex-basis: 100%;
+}
+
+.header__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* --------------------------------------------------------------------------
+   6. Board & columns
+   -------------------------------------------------------------------------- */
+.board {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-3);
+  background: var(--color-column);
+  border: 2px dashed transparent;
+  border-radius: var(--radius-lg);
+  transition: background-color var(--transition), border-color var(--transition);
+}
+
+.column--drop-target {
+  background: var(--color-drop-target);
+  border-color: var(--color-primary);
+}
+
+.column__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2) var(--space-3);
+}
+
+.column__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+}
+
+/* Coloured status dot before each column title */
+.column__title::before {
+  content: "";
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background: var(--column-accent, var(--color-todo));
+}
+
+.column[data-status="in-progress"] {
+  --column-accent: var(--color-in-progress);
+}
+
+.column[data-status="done"] {
+  --column-accent: var(--color-done);
+}
+
+.column__count {
+  min-width: 1.5rem;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-align: center;
+}
+
+.column__list {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: var(--space-3);
+  min-height: 6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.column__empty {
+  display: grid;
+  place-items: center;
+  flex-grow: 1;
+  padding: var(--space-5) var(--space-4);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   7. Task card
+   -------------------------------------------------------------------------- */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  cursor: grab;
+  transition: box-shadow var(--transition), opacity var(--transition), transform var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.card--dragging {
+  opacity: 0.4;
+  transform: scale(0.98);
+}
+
+.card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.card__title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.card__description {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.card__due {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.card__due--overdue {
+  color: var(--color-high-text);
+  font-weight: 600;
+}
+
+.card__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+
+/* Push the move-right button to the far edge so arrows sit at each end */
+.card__action--move-right {
+  margin-left: auto;
+}
+
+.card__action {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.card__action:hover:not(:disabled) {
+  background: var(--color-column);
+  color: var(--color-text);
+}
+
+.card__action--delete:hover:not(:disabled) {
+  background: var(--color-high-bg);
+  color: var(--color-danger);
+}
+
+.card__action:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   8. Priority label
+   -------------------------------------------------------------------------- */
+.priority {
+  padding: 0.125rem var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.priority--low {
+  background: var(--color-low-bg);
+  color: var(--color-low-text);
+}
+
+.priority--medium {
+  background: var(--color-medium-bg);
+  color: var(--color-medium-text);
+}
+
+.priority--high {
+  background: var(--color-high-bg);
+  color: var(--color-high-text);
+}
+
+/* --------------------------------------------------------------------------
+   9. Dialogs & form fields
+   -------------------------------------------------------------------------- */
+.dialog {
+  width: min(32rem, calc(100% - 2 * var(--space-4)));
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  color: var(--color-text);
+}
+
+.dialog--small {
+  width: min(24rem, calc(100% - 2 * var(--space-4)));
+}
+
+.dialog::backdrop {
+  background: rgb(15 23 42 / 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.dialog__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+}
+
+.dialog__title {
+  font-size: var(--font-size-lg);
+}
+
+.dialog__message {
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: var(--space-1);
+}
+
+.field-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.field__label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.field__required {
+  color: var(--color-danger);
+}
+
+.field__hint {
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.field__error {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+}
+
+/* --------------------------------------------------------------------------
+   10. Larger screens
+   -------------------------------------------------------------------------- */
+@media (min-width: 640px) {
+  .field-row {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 768px) {
+  .header__inner {
+    flex-wrap: nowrap;
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .header__title {
+    margin-right: 0;
+  }
+
+  /* On wide screens the search sits between the title and the buttons */
+  .header__search {
+    order: 0;
+    flex: 1;
+    max-width: 24rem;
+    margin-left: auto;
+  }
+
+  .board {
+    grid-template-columns: repeat(3, 1fr);
+    align-items: start;
+    padding: var(--space-5);
+    gap: var(--space-5);
+  }
+
+  .column {
+    min-height: 24rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   11. Motion preferences
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+  }
+}

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Flowboard – a lightweight Kanban task board built with vanilla HTML, CSS and JavaScript.">
+  <title>Flowboard – Kanban Task Board</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%234f46e5'/><rect x='7' y='8' width='5' height='16' rx='2' fill='white'/><rect x='14' y='8' width='5' height='11' rx='2' fill='white'/><rect x='21' y='8' width='5' height='7' rx='2' fill='white'/></svg>">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <!-- Icon sprite: cards reference these with <use>, so each icon is defined once -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="icon-arrow-left" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="icon-arrow-right" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="icon-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="icon-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="icon-calendar" viewBox="0 0 24 24"><path d="M5 5h14a1 1 0 011 1v13a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1zM4 10h16M8 3v4M16 3v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </svg>
+
+  <header class="header">
+    <div class="header__inner">
+      <h1 class="header__title">
+        <span class="header__logo" aria-hidden="true"></span>
+        Flowboard
+      </h1>
+
+      <div class="header__search">
+        <label class="visually-hidden" for="search">Search tasks</label>
+        <input class="input input--search" id="search" type="search" placeholder="Search tasks…" autocomplete="off">
+      </div>
+
+      <div class="header__actions">
+        <button class="button button--ghost" id="reset-board" type="button">Reset board</button>
+        <button class="button button--primary" id="add-task" type="button">
+          <span aria-hidden="true">+</span> Add task
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="board" id="board" aria-label="Task board">
+    <section class="column" data-status="todo" aria-labelledby="column-todo-title">
+      <header class="column__header">
+        <h2 class="column__title" id="column-todo-title">To Do</h2>
+        <span class="column__count" data-role="count" aria-label="0 tasks">0</span>
+      </header>
+      <ul class="column__list" data-role="list"></ul>
+    </section>
+
+    <section class="column" data-status="in-progress" aria-labelledby="column-in-progress-title">
+      <header class="column__header">
+        <h2 class="column__title" id="column-in-progress-title">In Progress</h2>
+        <span class="column__count" data-role="count" aria-label="0 tasks">0</span>
+      </header>
+      <ul class="column__list" data-role="list"></ul>
+    </section>
+
+    <section class="column" data-status="done" aria-labelledby="column-done-title">
+      <header class="column__header">
+        <h2 class="column__title" id="column-done-title">Done</h2>
+        <span class="column__count" data-role="count" aria-label="0 tasks">0</span>
+      </header>
+      <ul class="column__list" data-role="list"></ul>
+    </section>
+  </main>
+
+  <!-- Screen-reader announcements for actions that have no visible confirmation (moves, deletes) -->
+  <p class="visually-hidden" id="announcer" role="status" aria-live="polite"></p>
+
+  <!-- Add / edit task dialog -->
+  <dialog class="dialog" id="task-dialog" aria-labelledby="task-dialog-title">
+    <form class="dialog__form" id="task-form" method="dialog" novalidate>
+      <h2 class="dialog__title" id="task-dialog-title">Add task</h2>
+
+      <div class="field">
+        <label class="field__label" for="task-title">Title <span class="field__required" aria-hidden="true">*</span></label>
+        <input class="input" id="task-title" name="title" type="text" maxlength="80" required aria-describedby="task-title-error">
+        <p class="field__error" id="task-title-error" hidden>Please enter a title.</p>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="task-description">Description</label>
+        <textarea class="input input--textarea" id="task-description" name="description" rows="3" maxlength="500"></textarea>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label class="field__label" for="task-priority">Priority</label>
+          <select class="input" id="task-priority" name="priority">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="task-due">Due date <span class="field__hint">(optional)</span></label>
+          <input class="input" id="task-due" name="dueDate" type="date">
+        </div>
+      </div>
+
+      <div class="dialog__actions">
+        <button class="button button--ghost" type="button" data-action="cancel">Cancel</button>
+        <button class="button button--primary" type="submit" value="save" id="task-submit">Add task</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Reusable confirmation dialog (delete task, reset board) -->
+  <dialog class="dialog dialog--small" id="confirm-dialog" aria-labelledby="confirm-dialog-title" aria-describedby="confirm-dialog-message">
+    <form class="dialog__form" method="dialog">
+      <h2 class="dialog__title" id="confirm-dialog-title">Are you sure?</h2>
+      <p class="dialog__message" id="confirm-dialog-message"></p>
+      <div class="dialog__actions">
+        <button class="button button--ghost" value="cancel" autofocus>Cancel</button>
+        <button class="button button--danger" value="confirm" id="confirm-dialog-confirm">Delete</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>
